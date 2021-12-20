@@ -12,7 +12,7 @@ GGEmodel(
   rep = NULL,
   centering = "tester",
   scaling = "none",
-  SVP = "column"
+  SVP = "symmetrical"
 )
 }
 \arguments{
@@ -38,7 +38,7 @@ centered (GE) or `"none"` for no centering. Defaults to `"tester"`.}
 `"none"` for no scaling. Defaults to `"none"`.}
 
 \item{SVP}{method for singular value partitioning. Either `"row"`, `"column"`,
-`"dual"` or `"symmetrical"`. Defaults to `"column"`.}
+`"dual"` or `"symmetrical"`. Defaults to `"symmetrical"`.}
 }
 \value{
 A list of class \code{GGE_Model} containing:
@@ -57,8 +57,8 @@ A list of class \code{GGE_Model} containing:
  \item{SVP}{name of SVP method.}
 }
 \description{
-The Site Regression model (also called *genotype +
- genotype-by-environment (GGE) model* is a powerful tool for effective
+The Site Regression model (also called genotype +
+ genotype-by-environment (GGE) model) is a powerful tool for effective
  analysis and interpretation of data from multi-environment trials in
  breeding programs. This function is a wrapper for
  \code{\link[GGEBiplots]{GGEModel}} from the
@@ -76,6 +76,7 @@ The Site Regression model (also called *genotype +
 
  library(geneticae)
  # Data without replication
+ library(agridat)
  data(yan.winterwheat)
  GGE1 <- GGEmodel(yan.winterwheat, genotype = "gen", environment = "env",
                   response = "yield", centering = "tester")

@@ -5,11 +5,10 @@
 
 ## Statistical Tools for the Analysis of Multi Environment Agronomic Trials
 
-<!-- cuando este la web poner acá -->
-<!-- --- -->
-<!-- Web: <https://mpru.github.io/karel/> -->
-<!-- CRAN: <https://CRAN.R-project.org/package=karel> -->
-<!-- --- -->
+Web: <https://jangelini.github.io/geneticae/>
+
+CRAN: <https://CRAN.R-project.org/package=geneticae/index.html>
+
 <!-- badges: start -->
 <!-- dejo esto porque todavia hay links que no estan disponibles: -->
 
@@ -17,8 +16,10 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 <!-- cuando este en cran agregar estas -->
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/geneticae)](https://CRAN.R-project.org/package=geneticae) -->
-<!-- [![Downloads](https://cranlogs.r-pkg.org/badges/geneticae?color=blue)](https://cran.rstudio.com/package=geneticae) -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/geneticae)](https://CRAN.R-project.org/package=geneticae)
+[![Downloads](https://cranlogs.r-pkg.org/badges/geneticae?color=blue)](https://CRAN.R-project.org/package=geneticae)
 <!-- [![Codecov test coverage](https://codecov.io/gh/r-lib/geneticae/branch/master/graphs/badge.svg)](https://codecov.io/gh/r-lib/geneticae?branch=master) -->
 <!-- badges: end -->
 
@@ -70,17 +71,17 @@ customize the biplots, which are part of the graphical output of these
 methods.
 
 This package can be used through
-[this](https://github.com/jangelini/Geneticae-Shiny-Web-APP) Shiny app,
-making it available not only for R programmers.
+[this](https://geneticae.shinyapps.io/geneticae-shiny-web-app/) Shiny
+app, making it available not only for R programmers.
 
 ## Installation
 
-<!-- poner esto cuando esté en cran -->
-<!-- You can install the released version of `geneticae` from -->
-<!-- [CRAN](https://CRAN.R-project.org) with: -->
-<!-- ``` {r, eval=F} -->
-<!-- install.packages("geneticae") -->
-<!-- ``` -->
+You can install the released version of `geneticae` from
+[CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("geneticae")
+```
 
 You can install the development version from our [GitHub
 repo](https://github.com/jangelini/geneticae) with:
@@ -93,7 +94,9 @@ devtools::install_github("jangelini/geneticae")
 ## Shiny app
 
 You can use `geneticae` through
-[this](https://github.com/jangelini/Geneticae-Shiny-Web-APP) Shiny app.
+[this](https://geneticae.shinyapps.io/geneticae-shiny-web-app/) Shiny
+app. Source code is in [GitHub
+repo](https://github.com/jangelini/Geneticae-Shiny-Web-APP).
 
 ## Getting Started
 
@@ -119,7 +122,8 @@ environment.
 
 ``` r
 library(geneticae)
-
+library(agridat)
+data(yan.winterwheat)
 GGE1 <- GGEmodel(yan.winterwheat, genotype = "gen", environment = "env", 
                  response = "yield", centering = "tester")
 
@@ -128,11 +132,4 @@ GGEPlot(GGE1, type = "Selected Environment", selectedE = "OA93",
         footnote = F, titles = F)
 ```
 
-<div class="figure" style="text-align: center">
-
-<img src="man/figures/README-unnamed-chunk-3-1.png" alt="Figure: comparison of cultivar performance in a selected environment." width="45%" />
-<p class="caption">
-Figure: comparison of cultivar performance in a selected environment.
-</p>
-
-</div>
+<img src="man/figures/README-unnamed-chunk-4-1.png" title="Figure: comparison of cultivar performance in a selected environment." alt="Figure: comparison of cultivar performance in a selected environment." width="45%" style="display: block; margin: auto;" />

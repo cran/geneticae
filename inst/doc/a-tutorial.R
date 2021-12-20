@@ -2,6 +2,9 @@
 knitr::opts_chunk$set(warning = F, message = F, out.width = "60%")
 
 ## ---- eval=F------------------------------------------------------------------
+#  install.packages("geneticae")
+
+## ---- eval=F------------------------------------------------------------------
 #  # install.packages("devtools")
 #  devtools::install_github("jangelini/geneticae")
 
@@ -9,6 +12,7 @@ knitr::opts_chunk$set(warning = F, message = F, out.width = "60%")
 library(geneticae)
 
 ## -----------------------------------------------------------------------------
+library(agridat)
 data(yan.winterwheat)
 head(yan.winterwheat)
 
@@ -27,11 +31,11 @@ GGE1 <- GGEmodel(yan.winterwheat, genotype = "gen", environment = "env",
 ## ---- fig.align='center', fig.cap='Figure 2: GGE biplot based on yield data of 1993 Ontario winter wheat performance trials. The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms. Cultivars are shown in lowercase and environments in uppercase.'----
 GGEPlot(GGE1, type = "Biplot", footnote = F, titles = F)
 
-## ---- fig.align='center', fig.cap='Figure 3: comparison of cultivar performance in a selected environment (OA93). The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms. Cultivars are shown in lowercase and environments in uppercase.'----
+## ---- fig.align='center', fig.cap='Figure 3: comparison of cultivar performance in a selected environment (OA93). The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms.'----
 GGEPlot(GGE1, type = "Selected Environment", selectedE = "OA93", 
         footnote = F, titles = F)
 
-## ----  fig.align='center', fig.cap='Figure 4: comparison of the performance of cultivar Luc in different environments. The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms. Cultivars are shown in lowercase and environments in uppercase.'----
+## ----  fig.align='center', fig.cap='Figure 4: comparison of the performance of cultivar Luc in different environments. The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms. '----
 GGEPlot(GGE1, type = "Selected Genotype", selectedG = "Kat", 
         footnote = F, titles = F)
 
@@ -45,17 +49,17 @@ GGEPlot(GGE1, type = "Which Won Where/What", footnote = F,
         titles = F, axis_expand = 1.5)
 
 
-## ----  fig.align='center', fig.cap='Figure 7: average environment view of the GGE biplot based on genotype-focused scaling, showing mean yield and stability of genotypes. Cultivars are shown in lowercase and environments in uppercase.'----
+## ----  fig.align='center', fig.cap='Figure 7: average environment view of the GGE biplot based on genotype-focused scaling, showing mean yield and stability of genotypes. '----
 data <- yan.winterwheat[yan.winterwheat$env %in% c("BH93", "EA93","HW93", "ID93",
                                                    "NN93", "RN93", "WP93"), ]
 
 GGE2 <- GGEmodel(data, genotype = "gen", environment = "env", 
                  response = "yield", SVP = "row")
 
-GGEPlot(GGE2, type = "Mean vs. Stability", footnote = F, titles = F)
+GGEPlot(GGE2, type = "Mean vs. Stability", footnote = F, titles = F, sizeEnv = 0)
 
-## ----  fig.align='center', fig.cap='Figure 8: Classification of genotypes with respect to the ideal genotype. Genotype-focused scaling is used. Cultivars are shown in lowercase and environments in uppercase.', warning=FALSE----
-GGEPlot(GGE2, type = "Ranking Genotypes", footnote = F, titles = F)
+## ----  fig.align='center', fig.cap='Figure 8: Classification of genotypes with respect to the ideal genotype. Genotype-focused scaling is used.', warning=FALSE----
+GGEPlot(GGE2, type = "Ranking Genotypes", footnote = F, titles = F, sizeEnv = 0)
 
 ## ----  fig.align='center', fig.cap='Figure 9: Relationship between environments. Environment-focused scaling is used.'----
 GGE3 <- GGEmodel(data, genotype = "gen", environment = "env", 

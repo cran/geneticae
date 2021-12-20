@@ -1,7 +1,7 @@
 #'Site Regression model
 #'
-#'@description The Site Regression model (also called *genotype +
-#'  genotype-by-environment (GGE) model* is a powerful tool for effective
+#'@description The Site Regression model (also called genotype +
+#'  genotype-by-environment (GGE) model) is a powerful tool for effective
 #'  analysis and interpretation of data from multi-environment trials in
 #'  breeding programs. This function is a wrapper for
 #'  \code{\link[GGEBiplots]{GGEModel}} from the
@@ -29,7 +29,7 @@
 #'@param scaling scaling method. Either `"sd"` for standard deviation or
 #'  `"none"` for no scaling. Defaults to `"none"`.
 #'@param SVP method for singular value partitioning. Either `"row"`, `"column"`,
-#'  `"dual"` or `"symmetrical"`. Defaults to `"column"`.
+#'  `"dual"` or `"symmetrical"`. Defaults to `"symmetrical"`.
 #'@return A list of class \code{GGE_Model} containing:
 #'  \item{coordgenotype}{plotting coordinates for each genotype in every component.}
 #'  \item{coordenviroment}{plotting coordinates for each environment in every
@@ -59,6 +59,7 @@
 #'
 #'  library(geneticae)
 #'  # Data without replication
+#'  library(agridat)
 #'  data(yan.winterwheat)
 #'  GGE1 <- GGEmodel(yan.winterwheat, genotype = "gen", environment = "env",
 #'                   response = "yield", centering = "tester")
@@ -74,8 +75,8 @@
 #'@importFrom tidyr spread
 #'@importFrom dplyr group_by summarise rename
 #'
-GGEmodel <- function(Data, genotype="gen", environment="env", response="yield",
-                     rep=NULL, centering="tester",scaling="none",SVP="column"){
+GGEmodel <- function(Data, genotype = "gen", environment = "env", response = "yield",
+                     rep=NULL, centering="tester",scaling = "none",SVP = "symmetrical"){
 
   if (missing(Data)) stop("Need to provide Data data frame or matrix")
   if(any(is.na(Data))){stop("Missing data in input data frame, run the imputation function first to complete the data set")}

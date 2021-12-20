@@ -45,6 +45,7 @@
 #'
 #' library(geneticae)
 #' # Data without replication
+#' library(agridat)
 #' data(yan.winterwheat)
 #' BIP_AMMI <- rAMMI(yan.winterwheat, genotype = "gen", environment = "env",
 #'                   response = "yield", type = "AMMI")
@@ -193,7 +194,9 @@ rAMMI<-function(Data, genotype="gen", environment="env", response="Y", rep=NULL,
 
   AMMI2 <- AMMI1 + geom_segment(xend = 0, yend = 0, col = alpha(colEnv, 0.5),
                                 data = subset(plotdata, type == "environment")) +
-    geom_text(aes(col=type,label=label,size=type),show.legend = FALSE)
+    geom_text(aes(label=label),show.legend = FALSE,data=subset(plotdata,type=="genotype"),col=colGen,size=sizeGen)+
+    geom_text(aes(label=label),show.legend = FALSE,data=subset(plotdata,type=="environment"),col=colEnv,size=sizeEnv)
+
 
   if(titles==TRUE){AMMI2<-AMMI2+ggtitle(type)}
   if(footnote==TRUE){
