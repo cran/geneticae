@@ -1,7 +1,7 @@
 Package: geneticae
 Title: Statistical Tools for the Analysis of Multi Environment
         Agronomic Trials
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
   person(given = "Julia",
          family = "Angelini",
@@ -45,10 +45,10 @@ URL: https://jangelini.github.io/geneticae/
 BugReports: https://github.com/jangelini/geneticae/issues
 Language: en-US
 NeedsCompilation: no
-Packaged: 2021-12-20 15:39:30 UTC; julia-fedora
+Packaged: 2022-02-09 21:32:21 UTC; julia-fedora
 Author: Julia Angelini [aut, cre] (<https://orcid.org/0000-0002-5815-1771>),
   Marcos Prunello [aut] (<https://orcid.org/0000-0002-9611-527X>),
   Gerardo Cervigni [aut]
 Maintainer: Julia Angelini <jangelini_93@hotmail.com>
 Repository: CRAN
-Date/Publication: 2021-12-20 15:50:02 UTC
+Date/Publication: 2022-02-09 22:30:13 UTC

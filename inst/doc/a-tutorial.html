@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2021-12-20" />
+<meta name="date" content="2022-02-09" />
 
 <title>How to use the geneticae package</title>
 
@@ -147,7 +147,7 @@ Gerardo Cervigni<br />
 Centro de Estudios Fotosintéticos y Bioquímicos<br />
 Universidad Nacional de Rosario<br />
 Rosario, Argentina</div></h4>
-<h4 class="date">2021-12-20</h4>
+<h4 class="date">2022-02-09</h4>
 
 
 
@@ -409,35 +409,36 @@ Figure 10: classification of environments with respect to the ideal environment.
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] agridat_1.20    geneticae_0.2.0
+## [1] agridat_1.20    geneticae_0.3.0
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] ggrepel_0.9.1        Rcpp_1.0.7           mvtnorm_1.1-3       
-##  [4] lattice_0.20-45      tidyr_1.1.4          digest_0.6.27       
-##  [7] foreach_1.5.1        utf8_1.2.2           ggforce_0.3.3       
-## [10] R6_2.5.1             backports_1.4.1      pcaPP_1.9-74        
-## [13] stats4_4.1.2         evaluate_0.14        highr_0.9           
-## [16] ggplot2_3.3.5        pillar_1.6.4         rlang_0.4.11        
-## [19] jquerylib_0.1.4      DT_0.20              rmarkdown_2.10      
-## [22] labeling_0.4.2       stringr_1.4.0        htmlwidgets_1.5.4   
-## [25] polyclip_1.10-0      munsell_0.5.0        broom_0.7.10        
-## [28] compiler_4.1.2       xfun_0.23            BiocGenerics_0.40.0 
-## [31] pkgconfig_2.0.3      pcaMethods_1.86.0    htmltools_0.5.2     
-## [34] flashClust_1.01-2    tidyselect_1.1.1     tibble_3.1.6        
-## [37] codetools_0.2-18     fansi_0.5.0          rrcov_1.6-0         
-## [40] crayon_1.4.2         dplyr_1.0.7          withr_2.4.3         
-## [43] MASS_7.3-54          leaps_3.1            grid_4.1.2          
-## [46] jsonlite_1.7.2       gtable_0.3.0         lifecycle_1.0.1     
-## [49] magrittr_2.0.1       scales_1.1.1         stringi_1.6.2       
-## [52] farver_2.1.0         scatterplot3d_0.3-41 doParallel_1.0.16   
-## [55] robustbase_0.93-9    mice_3.14.0          bslib_0.3.1         
-## [58] ellipsis_0.3.2       generics_0.1.1       vctrs_0.3.8         
-## [61] iterators_1.0.13     tools_4.1.2          Biobase_2.54.0      
-## [64] glue_1.4.2           DEoptimR_1.0-9       tweenr_1.0.2        
-## [67] purrr_0.3.4          parallel_4.1.2       fastmap_1.1.0       
-## [70] yaml_2.2.1           missMDA_1.18         colorspace_2.0-2    
-## [73] cluster_2.1.2        FactoMineR_2.4       knitr_1.33          
-## [76] bcv_1.0.1.4          GGEBiplots_0.1.1     sass_0.4.0</code></pre>
+##  [4] lattice_0.20-45      tidyr_1.1.4          assertthat_0.2.1    
+##  [7] digest_0.6.27        foreach_1.5.1        utf8_1.2.2          
+## [10] ggforce_0.3.3        R6_2.5.1             backports_1.4.1     
+## [13] pcaPP_1.9-74         stats4_4.1.2         evaluate_0.14       
+## [16] highr_0.9            ggplot2_3.3.5        pillar_1.6.4        
+## [19] rlang_0.4.11         jquerylib_0.1.4      DT_0.20             
+## [22] rmarkdown_2.10       labeling_0.4.2       stringr_1.4.0       
+## [25] htmlwidgets_1.5.4    polyclip_1.10-0      munsell_0.5.0       
+## [28] broom_0.7.10         compiler_4.1.2       xfun_0.23           
+## [31] BiocGenerics_0.40.0  pkgconfig_2.0.3      pcaMethods_1.86.0   
+## [34] htmltools_0.5.2      flashClust_1.01-2    tidyselect_1.1.1    
+## [37] tibble_3.1.6         codetools_0.2-18     fansi_0.5.0         
+## [40] rrcov_1.6-0          crayon_1.4.2         dplyr_1.0.7         
+## [43] withr_2.4.3          MASS_7.3-54          leaps_3.1           
+## [46] grid_4.1.2           jsonlite_1.7.2       gtable_0.3.0        
+## [49] lifecycle_1.0.1      DBI_1.1.2            magrittr_2.0.1      
+## [52] scales_1.1.1         stringi_1.6.2        farver_2.1.0        
+## [55] scatterplot3d_0.3-41 doParallel_1.0.16    robustbase_0.93-9   
+## [58] mice_3.14.0          bslib_0.3.1          ellipsis_0.3.2      
+## [61] generics_0.1.1       vctrs_0.3.8          iterators_1.0.13    
+## [64] tools_4.1.2          Biobase_2.54.0       glue_1.4.2          
+## [67] DEoptimR_1.0-9       tweenr_1.0.2         purrr_0.3.4         
+## [70] parallel_4.1.2       fastmap_1.1.0        yaml_2.2.1          
+## [73] missMDA_1.18         colorspace_2.0-2     cluster_2.1.2       
+## [76] FactoMineR_2.4       knitr_1.33           bcv_1.0.1.4         
+## [79] GGEBiplots_0.1.1     sass_0.4.0</code></pre>
 </div>
 
 
