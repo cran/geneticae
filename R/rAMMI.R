@@ -4,17 +4,16 @@
 #'options for customization.
 #'
 #'@param Data a dataframe with genotypes, environments, repetitions (if any) and
-#'  the phenotypic trait of interest. There is no restriction on the order in
-#'  which these variables should be presented in the dataframe, and also other
-#'  variables that will not be used in the analysis can be included.
+#'  the phenotypic trait of interest. Other variables that will not be used in
+#'  the analysis can be included.
 #'@param genotype column name containing genotypes.
 #'@param environment column name containing environments.
 #'@param response column name containing the phenotypic trait of interest.
 #'@param rep column name containing replications. If this argument is `NULL`
 #'  (default), replications are not considered for the analysis.
 #'@param Ncomp number of principal components that will be used in the analysis.
-#'@param type method for fitting the AMMI model: "AMMI", "rAMMI", "hAMMI",
-#'  "gAMMI", "lAMMI" or "ppAMMI" (see References). Defaults to "AMMI".
+#'@param type method for fitting the AMMI model: `"AMMI"`, `"rAMMI"`, `"hAMMI"`,
+#'  `"gAMMI"`, `"lAMMI"` or `"ppAMMI"` (see References). Defaults to `"AMMI"`.
 #'@param colGen genotype attributes colour. Defaults to "gray".
 #'@param colEnv environment attributes colour. Defaults to "darkred".
 #'@param sizeGen genotype labels text size. Defaults to 4.
@@ -34,8 +33,30 @@
 #'
 #'@return A biplot of class  \code{ggplot}
 #'
-#'@details Comentar cuál es cada método.
-#'
+#'@details
+#'To overcome the problem of data contamination with outlying observations,
+#'Rodrigues, Monteiro and Lourenco (2015) propose a robust AMMI model based on
+#'the M-Huber estimator and in robusts SVD/PCA procedures. Several SVD/PC
+#'methods were considered, briefly described below, thus conveying a total of
+#'five robust AMMI candidate models:
+#'\itemize{
+#'\item R-AMMI: uses the L1 norm instead of the more usual least squares L2
+#'norm, to compute a robust approximation to the SVD of a rectangular matrix.
+#'\item H-AMMI: Combines projection-pursuit and robust covariance estimation
+#'techniques to compute the robust loadings. It is most adequate for
+#'high-dimensional data.
+#'\item G-AMMI: Uses projection-pursuit to compute PCA estimators. The
+#'optimization is done via the grid search algorithm in the plane instead of the
+#'p-dimensional space.
+#'\item L-AMMI: The idea behind this approach is to perform  classical PCA on
+#'the data but projected onto a unit sphere. When the data are elliptically
+#'distributed the estimates of the eigenvectors are consistent
+#'\item PP-AMMI: Uses projection-pursuit calculating the robust eigenvalues and
+#'eigenvectors without going through robust covariance estimation. The principal
+#'components can be sequentially computed and thus this method is very appealing
+#'when few genotypes are evaluated under a wide range of environmental and/or
+#'experimental conditions.
+#'}
 #'@references Rodrigues P.C., Monteiro A., Lourenco V.M. (2015). \emph{A robust
 #'  AMMI model for the analysis of genotype-by-environment data}. Bioinformatics
 #'  32, 58–66.
@@ -61,7 +82,8 @@
 #'@importFrom pcaMethods robustSvd
 #'@importFrom rrcov PcaHubert PcaGrid PcaLocantore PcaProj
 #'@importFrom stats lm residuals
-#'@importFrom dplyr group_by summarise rename pull
+#'@importFrom dplyr group_by summarise rename pull %>%
+#'@importFrom rlang sym
 #'
 rAMMI<-function(Data, genotype="gen", environment="env", response="Y", rep=NULL,Ncomp = 2, type = "AMMI",
                 colGen="gray47",colEnv="darkred",sizeGen=4,sizeEnv=4,titles=TRUE, footnote=TRUE, axis_expand=1.2, limits=TRUE,

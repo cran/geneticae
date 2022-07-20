@@ -1,3 +1,9 @@
+# geneticae 0.4.0
+
+Added SREG robust model in GGEmodel() function.
+
+Dependecy on archived bcv package removed.
+
 # geneticae 0.3.0
 
 Dependecy on archived GGEBiplotGUI package removed.

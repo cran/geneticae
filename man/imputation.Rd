@@ -17,7 +17,6 @@ imputation(
   maxiter = 1000,
   change.factor = 1,
   simplified.model = FALSE,
-  k = min(nrow(Data), ncol(Data)),
   scale = TRUE,
   method = "EM",
   row.w = NULL,
@@ -30,9 +29,8 @@ imputation(
 }
 \arguments{
 \item{Data}{dataframe containing genotypes, environments, repetitions (if any)
-and the phenotypic trait of interest. Columns can be in any order in the
-dataset and other variables that will not be used in the analysis can be
-present.}
+and the phenotypic trait of interest. Other variables that will not be used
+in the analysis can be present.}
 
 \item{genotype}{column name containing genotypes.}
 
@@ -43,7 +41,7 @@ present.}
 \item{rep}{column name containing replications. If this argument is NULL,
 there are no replications available in the data. Defaults to NULL.}
 
-\item{type}{imputation method. Either "EM-AMMI", "EM-SVD",
+\item{type}{imputation method. Either "EM-AMMI",
 "Gabriel","WGabriel","EM-PCA". Defaults to "EM-AMMI".}
 
 \item{nPC}{number of components used to predict the missing values.
@@ -88,8 +86,6 @@ even in some cases where the regular procedure fails. If the regular
 procedure does not converge for the standard initial values, the simplified
 model can be used to determine a better set of initial values.}
 
-\item{k}{rank of the SVD approximation.}
-
 \item{scale}{boolean. By default TRUE leading to a same weight for each
 variable}
 
@@ -121,6 +117,49 @@ Missing values are not allowed by the AMMI or GGE methods. This function
 provides several methods to impute missing observations in data from
 multi-environment trials and to subsequently adjust the mentioned methods.
 }
+\details{
+Often, multi-environment experiments are unbalanced because several genotypes
+are not tested in some environments. Several methodologies have been proposed
+in order to solve this lack of balance caused by missing values, some of which
+are included in this function:
+
+\itemize{
+\item EM-AMMI: an iterative scheme built round the above procedure is used to
+obtain AMMI imputations from the EM algorithm. The additive parameters are
+initially set by computing the grand mean, genotype means and environment
+means obtained from the observed data. The residuals for the observed cells
+are initialized as the cell mean minus the genotype mean minus the environment
+mean plus the grand mean, and interactions for the missing positions are
+initially set to zero. The initial multiplicative parameters are obtained from
+the SVD of this matrix of residuals, and the missing values are filled by the
+appropriate AMMI estimates. In subsequent iterations, the usual AMMI procedure
+is applied to the completed matrix and the missing values are updated by the
+corresponding AMMI estimates. The arguments used for this method
+are:initial.values, precision, maxiter, change.factor and simplified.model
+
+\item Gabriel: combines regression and lower-rank approximation using SVD.
+This method initially replaces the missing cells by arbitrary values, and
+subsequently the imputations are refined through an iterative scheme that
+defines a partition of the matrix for each missing value in turn and uses a
+linear regression of columns (or rows) to obtain the new imputation. The
+arguments used for this method is only the dataframe.
+
+\item WGabriel: is a a modification of Gabriel method that uses weights chosen
+by cross-validation. The arguments used for this method are Winf and Wsup.
+
+\item EM-PCA: impute the missing entries of a mixed data using the iterative
+PCA algorithm. The algorithm first consists imputing missing values with
+initial values. The second step of the iterative PCA algorithm is to perform
+PCA on the completed dataset to estimate the parameters. Then, it imputes the
+missing values with the reconstruction formulae of order nPC (the fitted
+matrix computed with nPC components for the scores and loadings). These steps
+of estimation of the parameters via PCA and imputation of the missing values
+using the fitted matrix are iterate until convergence. The arguments used for
+this methods are: nPC, scale, method, row.w, coeff.ridge, precision, seed,
+nb.init and maxiter
+
+}
+}
 \examples{
 library(geneticae)
 # Data without replications
@@ -134,18 +173,19 @@ yan.winterwheat[2,3]<-NA
 
 imputation(yan.winterwheat, genotype = "gen", environment = "env",
            response = "yield", type = "EM-AMMI")
+
 # Data with replications
 data(plrv)
 plrv[1,3] <- NA
 plrv[3,3] <- NA
 plrv[2,3] <- NA
 imputation(plrv, genotype = "Genotype", environment = "Locality",
-           response = "Yield", rep = "Rep", type = "EM-SVD")
+           response = "Yield", rep = "Rep", type = "EM-AMMI")
 
 }
 \references{
-Paderewski, J. (2013). An R function for imputation of missing
- cells in two-way data sets by EM-AMMI algorithm. Communications in Biometry
+Paderewski, J. (2013). \emph{An R function for imputation of missing
+ cells in two-way data sets by EM-AMMI algorithm}. Communications in Biometry
  and Crop Science 8, 60–69.
 
 Julie Josse, Francois Husson (2016). missMDA: A Package for
@@ -157,11 +197,8 @@ Arciniegas-Alarcón S., García-Peña M., Dias C.T.S., Krzanowski
  trials with genotype-by-environment interaction}. Biometrical Letters 47,
  1–14.
 
-Perry P.O. (2015). bcv: Cross-Validation for the SVD
- (Bi-Cross-Validation). R package version 1.0.1.
-
 Arciniegas-Alarcón S., García-Peña M., Krzanowski W.J., Dias
- C.T.S. (2014). An alternative methodology for imputing missing data in
- trials with genotype-byenvironment interaction: some new aspects.
+ C.T.S. (2014). \emph{An alternative methodology for imputing missing data in
+ trials with genotype-byenvironment interaction: some new aspects.}
  Biometrical Letters 51, 75-88.
 }

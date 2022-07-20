@@ -5,15 +5,14 @@
 #'multi-environment trials and to subsequently adjust the mentioned methods.
 #'
 #'@param Data dataframe containing genotypes, environments, repetitions (if any)
-#'  and the phenotypic trait of interest. Columns can be in any order in the
-#'  dataset and other variables that will not be used in the analysis can be
-#'  present.
+#'  and the phenotypic trait of interest. Other variables that will not be used
+#'  in the analysis can be present.
 #'@param genotype column name containing genotypes.
 #'@param environment column name containing environments.
 #'@param response column name containing the phenotypic trait.
 #'@param rep column name containing replications. If this argument is NULL,
 #'  there are no replications available in the data. Defaults to NULL.
-#'@param type imputation method. Either "EM-AMMI", "EM-SVD",
+#'@param type imputation method. Either "EM-AMMI",
 #'  "Gabriel","WGabriel","EM-PCA". Defaults to "EM-AMMI".
 #'@param nPC number of components used to predict the missing values.
 #'  Default to 2.
@@ -51,7 +50,6 @@
 #'  even in some cases where the regular procedure fails. If the regular
 #'  procedure does not converge for the standard initial values, the simplified
 #'  model can be used to determine a better set of initial values.
-#'@param k rank of the SVD approximation.
 #'@param scale boolean. By default TRUE leading to a same weight for each
 #'  variable
 #'@param method "Regularized" by default or "EM"
@@ -69,8 +67,54 @@
 #'@param Wsup peso superior
 #'
 #'@return imputed data matrix
-#'@references Paderewski, J. (2013). An R function for imputation of missing
-#'  cells in two-way data sets by EM-AMMI algorithm. Communications in Biometry
+#'
+#'@details
+#'
+#'Often, multi-environment experiments are unbalanced because several genotypes
+#'are not tested in some environments. Several methodologies have been proposed
+#'in order to solve this lack of balance caused by missing values, some of which
+#'are included in this function:
+#'
+#'\itemize{
+#'\item EM-AMMI: an iterative scheme built round the above procedure is used to
+#'obtain AMMI imputations from the EM algorithm. The additive parameters are
+#'initially set by computing the grand mean, genotype means and environment
+#'means obtained from the observed data. The residuals for the observed cells
+#'are initialized as the cell mean minus the genotype mean minus the environment
+#'mean plus the grand mean, and interactions for the missing positions are
+#'initially set to zero. The initial multiplicative parameters are obtained from
+#'the SVD of this matrix of residuals, and the missing values are filled by the
+#'appropriate AMMI estimates. In subsequent iterations, the usual AMMI procedure
+#'is applied to the completed matrix and the missing values are updated by the
+#'corresponding AMMI estimates. The arguments used for this method
+#'are:initial.values, precision, maxiter, change.factor and simplified.model
+#'
+#'\item Gabriel: combines regression and lower-rank approximation using SVD.
+#'This method initially replaces the missing cells by arbitrary values, and
+#'subsequently the imputations are refined through an iterative scheme that
+#'defines a partition of the matrix for each missing value in turn and uses a
+#'linear regression of columns (or rows) to obtain the new imputation. The
+#'arguments used for this method is only the dataframe.
+#'
+#'\item WGabriel: is a a modification of Gabriel method that uses weights chosen
+#'by cross-validation. The arguments used for this method are Winf and Wsup.
+#'
+#'\item EM-PCA: impute the missing entries of a mixed data using the iterative
+#'PCA algorithm. The algorithm first consists imputing missing values with
+#'initial values. The second step of the iterative PCA algorithm is to perform
+#'PCA on the completed dataset to estimate the parameters. Then, it imputes the
+#'missing values with the reconstruction formulae of order nPC (the fitted
+#'matrix computed with nPC components for the scores and loadings). These steps
+#'of estimation of the parameters via PCA and imputation of the missing values
+#'using the fitted matrix are iterate until convergence. The arguments used for
+#'this methods are: nPC, scale, method, row.w, coeff.ridge, precision, seed,
+#'nb.init and maxiter
+#'
+#'}
+#'
+#'
+#'@references Paderewski, J. (2013). \emph{An R function for imputation of missing
+#'  cells in two-way data sets by EM-AMMI algorithm}. Communications in Biometry
 #'  and Crop Science 8, 60–69.
 #'@references Julie Josse, Francois Husson (2016). missMDA: A Package for
 #'  Handling Missing Values in Multivariate Data Analysis. Journal of
@@ -79,11 +123,9 @@
 #'  W.J. (2010). \emph{An alternative methodology for imputing missing data in
 #'  trials with genotype-by-environment interaction}. Biometrical Letters 47,
 #'  1–14.
-#'@references  Perry P.O. (2015). bcv: Cross-Validation for the SVD
-#'  (Bi-Cross-Validation). R package version 1.0.1.
 #'@references Arciniegas-Alarcón S., García-Peña M., Krzanowski W.J., Dias
-#'  C.T.S. (2014). An alternative methodology for imputing missing data in
-#'  trials with genotype-byenvironment interaction: some new aspects.
+#'  C.T.S. (2014). \emph{An alternative methodology for imputing missing data in
+#'  trials with genotype-byenvironment interaction: some new aspects.}
 #'  Biometrical Letters 51, 75-88.
 #'
 #'@export
@@ -101,22 +143,24 @@
 #'
 #' imputation(yan.winterwheat, genotype = "gen", environment = "env",
 #'            response = "yield", type = "EM-AMMI")
+#'
 #' # Data with replications
 #' data(plrv)
 #' plrv[1,3] <- NA
 #' plrv[3,3] <- NA
 #' plrv[2,3] <- NA
 #' imputation(plrv, genotype = "Genotype", environment = "Locality",
-#'            response = "Yield", rep = "Rep", type = "EM-SVD")
+#'            response = "Yield", rep = "Rep", type = "EM-AMMI")
 #'
 #'@importFrom stats var
-#'@importFrom bcv impute.svd
 #'@importFrom missMDA imputePCA
-#'@importFrom dplyr group_by summarise rename
+#'@importFrom dplyr group_by summarise rename %>%
+#'@importFrom rlang sym
+#'@importFrom tidyr pivot_wider
 #'
 imputation <- function(Data, genotype="gen",environment="env", response="yield", rep=NULL,type="EM-AMMI",
                        nPC=2, initial.values=NA, precision=0.01, maxiter=1000, change.factor=1, simplified.model=FALSE,
-                       k = min(nrow(Data), ncol(Data)), scale = TRUE, method = "EM",
+                        scale = TRUE, method = "EM",
                        row.w = NULL, coeff.ridge = 1, seed = NULL, nb.init = 1, Winf=0.8,Wsup=1) {
 
   if (missing(Data)) stop("Need to provide Data data frame")
@@ -127,7 +171,7 @@ imputation <- function(Data, genotype="gen",environment="env", response="yield",
     class(genotype) == "character",
     class(environment) == "character",
     class(response) == "character",
-    type %in% c("EM-AMMI", "EM-SVD","Gabriel","WGabriel","EM-PCA"),
+    type %in% c("EM-AMMI", "Gabriel","WGabriel","EM-PCA"),
     class(nPC) == "numeric",
     # class(initial.values)  %in% c(NA, "vector", "numeric"),
     class(precision) == "numeric",
@@ -150,13 +194,13 @@ imputation <- function(Data, genotype="gen",environment="env", response="yield",
         Data %>%
         group_by(!!sym(genotype), !!sym(environment)) %>%
         summarise(mean_resp=mean(!!sym(response)))%>%
-        spread(!!sym(environment), mean_resp) %>%
+        pivot_wider( names_from = environment, values_from = mean_resp) %>%
         as.data.frame()
 
     } else{
       Data <-
         Data %>%
-        spread(!!sym(environment), !!sym(response)) %>%
+        pivot_wider( names_from = environment, values_from = response) %>%
         as.data.frame()
 
     }
@@ -167,9 +211,6 @@ imputation <- function(Data, genotype="gen",environment="env", response="yield",
   if(type=="EM-AMMI"){
      matrix<-EM.AMMI(Data, PC.nb=nPC, initial.values=initial.values, precision=precision,
                      max.iter=maxiter, change.factor=change.factor, simplified.model=simplified.model)$X
-   }
-   if(type=="EM-SVD"){
-     matrix<-impute.svd(Data, k = k, tol = precision, maxiter = maxiter)$x
    }
    if(type=="Gabriel"){
      matrix<-Gabriel.Calinski(Data)$GabrielImput

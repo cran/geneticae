@@ -113,7 +113,7 @@ GGE biplots are used for visual examination of the relationships
  Several types of biplots are offered which focus on different aspects of the
  analysis. Customization options are also included. This function is a
  modification of \code{\link[GGEBiplots]{GGEPlot}} from the
- href{https://CRAN.R-project.org/package=GGEBiplots}{GGEBiplots package}.
+ \href{https://CRAN.R-project.org/package=GGEBiplots}{GGEBiplots package}.
 }
 \examples{
  library(geneticae)
@@ -121,13 +121,13 @@ GGE biplots are used for visual examination of the relationships
  # Data without replication
  library(agridat)
  data(yan.winterwheat)
- GGE1 <- GGEmodel(yan.winterwheat, centering = "tester")
+ GGE1 <- GGEmodel(yan.winterwheat)
  GGEPlot(GGE1)
 
  # Data with replication
  data(plrv)
  GGE2 <- GGEmodel(plrv, genotype = "Genotype", environment = "Locality",
-                  response = "Yield", rep = "Rep", centering = "tester")
+                  response = "Yield", rep = "Rep")
  GGEPlot(GGE2)
 
 }

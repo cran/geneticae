@@ -1,5 +1,6 @@
 ## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(warning = F, message = F, out.width = "60%")
+library(dplyr)
 
 ## ---- eval=F------------------------------------------------------------------
 #  install.packages("geneticae")
@@ -26,7 +27,7 @@ rAMMI(yan.winterwheat, genotype = "gen", environment = "env",
 
 ## -----------------------------------------------------------------------------
 GGE1 <- GGEmodel(yan.winterwheat, genotype = "gen", environment = "env", 
-                 response = "yield", centering = "tester")
+                 response = "yield")
 
 ## ---- fig.align='center', fig.cap='Figure 2: GGE biplot based on yield data of 1993 Ontario winter wheat performance trials. The scaling method used is symmetrical singular value partitioning (by default). The 78% of G + GE variability is explained by the first two multiplicative terms. Cultivars are shown in lowercase and environments in uppercase.'----
 GGEPlot(GGE1, type = "Biplot", footnote = F, titles = F)
@@ -52,7 +53,7 @@ GGEPlot(GGE1, type = "Which Won Where/What", footnote = F,
 ## ----  fig.align='center', fig.cap='Figure 7: average environment view of the GGE biplot based on genotype-focused scaling, showing mean yield and stability of genotypes. '----
 data <- yan.winterwheat[yan.winterwheat$env %in% c("BH93", "EA93","HW93", "ID93",
                                                    "NN93", "RN93", "WP93"), ]
-
+data <- droplevels(data)
 GGE2 <- GGEmodel(data, genotype = "gen", environment = "env", 
                  response = "yield", SVP = "row")
 
