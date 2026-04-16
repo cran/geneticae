@@ -4,9 +4,7 @@
 #'  genotype-by-environment (GGE) model) is a powerful tool for effective
 #'  analysis and interpretation of data from multi-environment trials in
 #'  breeding programs. There are different functions in R to fit the SREG model,
-#'  such as the \code{\link[GGEBiplots]{GGEModel}} from the
-#'  \href{https://CRAN.R-project.org/package=GGEBiplots}{GGEBiplots package}.
-#'  However, this function has the following improvements: \itemize{ \item
+#'  however, this function has the following improvements: \itemize{ \item
 #'  Includes recently published robust versions of the SREG model (Angelini et
 #'  al., 2022). \item It can be used for data from trials with repetitions
 #'  (there is no need to calculate means beforehand). \item Other variables not
@@ -62,11 +60,11 @@
 #'  # Data without replication
 #'  library(agridat)
 #'  data(yan.winterwheat)
-#'  GGE1 <- GGEmodel(yan.winterwheat, genotype="gen", environment="env", response="yield")
+#'  GGE1 <- rSREGModel(yan.winterwheat, genotype="gen", environment="env", response="yield")
 #'
 #'  # Data with replication
 #'  data(plrv)
-#'  GGE2 <- GGEmodel(plrv, genotype = "Genotype", environment = "Locality",
+#'  GGE2 <- rSREGModel(plrv, genotype = "Genotype", environment = "Locality",
 #'                   response = "Yield", rep = "Rep")
 #'
 #'@importFrom MASS rlm
@@ -77,10 +75,10 @@
 #'@importFrom dplyr group_by summarise rename pull %>%
 #'@importFrom rlang sym
 
-GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yield",
-                      rep=NULL, model = "SREG", SVP="symmetrical")
+rSREGModel<- function(Data, genotype = "gen", environment = "env", response = "yield",
+                    rep=NULL, model = "SREG", SVP="symmetrical")
 {
-
+  
   if (missing(Data)) stop("Need to provide Data data frame")
   if(any(is.na(Data))){stop("Missing data in input data frame, run the imputation function first to complete the data set")}
   stopifnot(
@@ -92,7 +90,7 @@ GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yie
     model %in% c("SREG", "hSREG", "ppSREG", "CovSREG"),
     SVP %in% c("symmetrical", "row", "column")
   )
-
+  
   if(!is.null(rep)){
     Data <-
       Data %>%
@@ -100,11 +98,11 @@ GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yie
       summarise(y=mean(!!sym(response)))
     response = "y"
   }
-
+  
   gen <- as.factor(pull(Data, genotype))
   env <- as.factor(pull(Data, environment))
   y <- pull(Data, response)
-
+  
   Ngen <- nlevels(gen)
   Nenv <- nlevels(env)
   labelgen <- unique(gen)
@@ -112,9 +110,8 @@ GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yie
   Ngen <- nlevels(gen)
   Nenv <- nlevels(env)
   Max <- min(Ngen - 1, Nenv)
-
+  
   if (model == "SREG"){
-    # classic regression
     lm.x<- lm(y ~ env, data=Data, contrasts=list(env="contr.sum"))
     residuals.x<- matrix(residuals(lm.x), nrow = Ngen , ncol = Nenv)
     svd.x<- svd(residuals.x)
@@ -125,55 +122,52 @@ GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yie
   }
   #
   else if (model == "CovSREG"){
-    # robust regression
     rlm.x<- rlm(y~env, data=Data, contrasts=list(env="contr.sum"),maxit = 50)
     residuals.x<- matrix(residuals(rlm.x), nrow = Ngen, ncol = Nenv)
-
+    
     PcaCov <- PcaCov(residuals.x, cov.control=CovControlMrcd())
-
+    
     loading<- getLoadings(PcaCov)
     score<- getScores(PcaCov)
-
+    
     singlevalue<- sqrt(getEigenvalues(PcaCov))
     eigenvalues = singlevalue^2
     n <- NROW(score)
     singlevalue <- singlevalue * sqrt(n)
   }
   else if (model == "hSREG"){
-    # robust regression
     rlm.x<- rlm(y~env, data=Data, contrasts=list(env="contr.sum"),maxit = 50)
     residuals.x<- matrix(residuals(rlm.x), nrow = Ngen, ncol = Nenv)
-
+    
     modeloHubert<- PcaHubert(residuals.x, mad=FALSE)
-
+    
     loading<- getLoadings(modeloHubert)
     score<- getScores(modeloHubert)
-
+    
     singlevalue<- sqrt(getEigenvalues(modeloHubert))
     eigenvalues = singlevalue^2
     n <- NROW(score)
     singlevalue <- singlevalue * sqrt(n)
   }
   else if (model == "ppSREG"){
-    # robust regression
     rlm.x<- rlm(y~env, data=Data, contrasts=list(env="contr.sum"),maxit = 50)
     residuals.x<- matrix(residuals(rlm.x), nrow = Ngen, ncol = Nenv)
-
+    
     modeloProj<- PcaProj(residuals.x)
     loading<- getLoadings(modeloProj)
     score<- getScores(modeloProj)
-
+    
     singlevalue<- sqrt(getEigenvalues(modeloProj))
     eigenvalues = singlevalue^2
     n <- NROW(score)
     singlevalue <- singlevalue * sqrt(n)
   }
-
+  
   coordgenotype <- score
   coordenviroment <- loading
   singlevalue_scale <- singlevalue
-
-
+  
+  
   if(SVP=="row"){
     scale=0
   }
@@ -183,32 +177,31 @@ GGEmodel<- function(Data, genotype = "gen", environment = "env", response = "yie
   if(SVP=="symmetrical"){
     scale=0.5
   }
-
+  
   if(scale < 0 || scale > 1) warning("'scale' is outside [0, 1]")
   if(scale != 0) singlevalue_scale <- singlevalue_scale^scale else singlevalue_scale <- 1
-
+  
   coordgenotype <- t(t(score) / singlevalue_scale)
   coordenviroment <- t(t(loading) * singlevalue_scale)
-
+  
   vartotal = round(as.numeric(sum(eigenvalues)),2)
   varexpl = round(as.numeric((eigenvalues/vartotal) *100), 2)
-
+  
   centering="tester"
   scaling = "none"
   labelaxes <- paste("Component ",1:ncol(diag(singlevalue)), sep = "")
-
-  GGEmodel=list(model=model,
-                  coordgenotype=coordgenotype,
-                  coordenviroment=coordenviroment,
-                  eigenvalues=eigenvalues,
-                  vartotal=vartotal,
-                  varexpl=varexpl,
-                  labelgen=labelgen,
-                  labelenv=labelenv,
-                  labelaxes=labelaxes,
-                  Data=residuals.x,
-                  SVP=SVP)
-  class(GGEmodel)<-"GGEModel"
-  return(GGEmodel)
+  
+  rSREGModel=list(model=model,
+                coordgenotype=coordgenotype,
+                coordenviroment=coordenviroment,
+                eigenvalues=eigenvalues,
+                vartotal=vartotal,
+                varexpl=varexpl,
+                labelgen=labelgen,
+                labelenv=labelenv,
+                labelaxes=labelaxes,
+                Data=residuals.x,
+                SVP=SVP)
+  class(rSREGModel)<-"rSREGModel"
+  return(rSREGModel)
 }
-
