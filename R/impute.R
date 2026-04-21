@@ -115,7 +115,7 @@
 #'  1–14.
 #'@references Arciniegas-Alarcón S., García-Peña M., Krzanowski W.J., Dias
 #'  C.T.S. (2014). \emph{An alternative methodology for imputing missing data in
-#'  trials with genotype-byenvironment interaction: some new aspects.}
+#'  trials with genotype-by-environment interaction: some new aspects.}
 #'  Biometrical Letters 51, 75-88.
 #'
 #'@export
@@ -136,11 +136,14 @@
 #'
 #' # Data with replications
 #' data(plrv)
-#' plrv[1,3] <- NA
-#' plrv[3,3] <- NA
-#' plrv[2,3] <- NA
-#' imputation(plrv, genotype = "Genotype", environment = "Locality",
-#'            response = "Yield", rep = "Rep", type = "EM-AMMI")
+#' head(plrv)
+#' plrv$Yield[plrv$Locality == "Ayac" & plrv$Rep %in% c(1, 2, 3) & plrv$Genotype == '102.18'] <- NA
+#' 
+#' imputation(plrv, nPC = 2,genotype = "Genotype", environment = "Locality", 
+#'            response = "Yield", rep ='Rep', type = "EM-AMMI")
+#'            
+#' imputation(plrv, genotype = "Genotype", environment = "Locality", 
+#'            response = "Yield", rep ='Rep', type = "EM-SREG")
 #'
 #'@importFrom stats var
 #'@importFrom missMDA imputePCA

@@ -1,3 +1,9 @@
+# geneticae 1.0.1
+
+* **Documentation Update**: 
+    * Major improvements to `rAMMIModel()` and `rAMMIPlot()` documentation to clarify robust estimation methods and return objects.
+    * Updated package `Description` with latest references for robust SREG (2022) and MET data imputation (2024).
+
 # geneticae 1.0.0
 
 **New features:**
@@ -20,11 +26,11 @@
 
 Added SREG robust model in GGEmodel() function.
 
-Dependecy on archived bcv package removed.
+Dependency on archived bcv package removed.
 
 # geneticae 0.3.0
 
-Dependecy on archived GGEBiplotGUI package removed.
+Dependency on archived GGEBiplotGUI package removed.
 
 # geneticae 0.2.0
 

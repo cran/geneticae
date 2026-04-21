@@ -13,7 +13,7 @@
 #'@param type type of biplot to produce.
 #'\itemize{
 #'  \item \code{"Biplot"}: Basic biplot.
-#'  \item \code{"Selected Environmen"t}: Ranking of cultivars based on
+#'  \item \code{"Selected Environment"}: Ranking of cultivars based on
 #'  their performance in any given environment.
 #'  \item \code{"Selected Genotype"}: Ranking of environments based on the
 #'  performance of any given cultivar.
@@ -75,13 +75,13 @@
 #'  library(agridat)
 #'  data(yan.winterwheat)
 #'  GGE1 <- rSREGModel(yan.winterwheat)
-#'  rSREGPlot(GGE1)
+#'  rSREGPlot(GGE1, sizeGen=4, sizeEnv=4)
 #'
 #'  # Data with replication
 #'  data(plrv)
 #'  GGE2 <- rSREGModel(plrv, genotype = "Genotype", environment = "Locality",
 #'                   response = "Yield", rep = "Rep")
-#'  rSREGPlot(GGE2)
+#'  rSREGPlot(GGE2, sizeGen=4, sizeEnv=4)
 #'
 #'@importFrom ggplot2 aes arrow coord_fixed element_text geom_abline geom_hline
 #'  geom_point geom_polygon geom_segment geom_text geom_vline ggplot ggtitle
